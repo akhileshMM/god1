@@ -5,13 +5,14 @@ from sklearn.metrics.pairwise import cosine_similarity
 from groq import Groq
 from dotenv import load_dotenv
 import os
-import requests
 from PyPDF2 import PdfReader
+
 # -------------------------------
 # Step 1. PDF Processing Functions
 # -------------------------------
 
 pdf_path = "project/Bhagavad-GitaAsItis.pdf"
+
 # Check if file exists before proceeding
 if not os.path.exists(pdf_path):
     st.error(f"PDF file not found: {pdf_path}")
@@ -42,32 +43,12 @@ client = Groq(api_key=api_key)
 # -------------------------------
 
 st.sidebar.markdown("[Give Feedback Here!](https://forms.gle/your-google-form-link)")
-pdf_url = "project/Bhagavad-GitaAsItis.pdf"
-pdf_path = "project/Bhagavad-GitaAsItis.pdf"
 
-# Check if file exists before reading
-if not os.path.exists(pdf_path):
-    st.error(f"PDF file not found: {pdf_path}")
-    st.stop()
-
-# Read PDF using PyPDF2
-try:
-    reader = PdfReader(pdf_path)
-    pages = [page.extract_text() for page in reader.pages if page.extract_text()]
-
-    if not pages:
-        st.error("No text extracted from the PDF. It might be an image-based PDF.")
-        st.stop()
-except Exception as e:
-    st.error(f"Error reading PDF: {e}")
-    st.stop()
-
-with open("Bhagavad-GitaAsItis", "wb") as f:
-    f.write(response.content)
-
-if not pages:
-    st.error("No text extracted from the PDF. Please check the file path or PDF content.")
-    st.stop()
+# Ensure vectorizer and page_vectors are created
+def create_vectorizer(pages):
+    vectorizer = TfidfVectorizer(stop_words="english")
+    page_vectors = vectorizer.fit_transform(pages)
+    return vectorizer, page_vectors
 
 vectorizer, page_vectors = create_vectorizer(pages)
 
@@ -75,6 +56,12 @@ st.subheader("Chat with the Bhagavad Gita")
 
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
+
+def retrieve_context(query, vectorizer, page_vectors, pages, top_n=3):
+    query_vector = vectorizer.transform([query])
+    similarities = cosine_similarity(query_vector, page_vectors).flatten()
+    top_indices = similarities.argsort()[-top_n:][::-1]
+    return "\n\n".join(pages[i] for i in top_indices)
 
 def stream_gita_response(user_input, context):
     # Create a system message that includes the PDF-based context.
