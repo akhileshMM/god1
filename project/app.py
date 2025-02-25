@@ -30,8 +30,6 @@ except Exception as e:
     st.stop()
 
 # Debugging
-st.write("✅ PDF loaded successfully. Extracted pages:", len(pages))
-
 # -------------------------------
 # Step 2. Initialize Groq API Client
 # -------------------------------
