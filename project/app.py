@@ -6,22 +6,27 @@ from groq import Groq
 from dotenv import load_dotenv
 import os
 import requests
+from PyPDF2 import PdfReader
 # -------------------------------
 # Step 1. PDF Processing Functions
 # -------------------------------
 
-from PyPDF2 import PdfReader
+pages = []
 
 try:
-    reader = PdfReader("Bhagavad-GitaAsItis.pdf")
+    reader = PdfReader("Bhagavad-GitaAsItis.pdf")  # Ensure this file exists
     pages = [page.extract_text() for page in reader.pages if page.extract_text()]
 except Exception as e:
     st.error(f"Error reading PDF: {e}")
     st.stop()
 
+# Check if pages is still empty
 if not pages:
     st.error("No text extracted from the PDF. Please check the file path.")
     st.stop()
+
+# Debugging (optional)
+st.write("Pages extracted:", pages)
 
 
 # -------------------------------
