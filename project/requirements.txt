@@ -3,3 +3,4 @@ PyPDF2
 scikit-learn
 requests
 groq
+python-dotenv
