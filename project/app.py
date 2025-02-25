@@ -11,37 +11,26 @@ from PyPDF2 import PdfReader
 # Step 1. PDF Processing Functions
 # -------------------------------
 
-pages = []  # Initialize pages as an empty list
-
-if not pages:
-    st.error("No text extracted from the PDF. Please check the file path.")
-    st.stop()
-
-
 pdf_path = "Bhagavad-GitaAsItis.pdf"
+
+# Check if file exists before proceeding
 if not os.path.exists(pdf_path):
-    st.error("PDF file not found. Please check the path.")
+    st.error(f"PDF file not found: {pdf_path}")
     st.stop()
-
-reader = PdfReader(pdf_path)
-pages = [page.extract_text() for page in reader.pages if page.extract_text()]
-
 
 try:
-    reader = PdfReader("Bhagavad-GitaAsItis.pdf")  # Ensure this file exists
+    reader = PdfReader(pdf_path)
     pages = [page.extract_text() for page in reader.pages if page.extract_text()]
+    
+    if not pages:
+        st.error("No text extracted from the PDF. It might be an image-based PDF.")
+        st.stop()
 except Exception as e:
     st.error(f"Error reading PDF: {e}")
     st.stop()
 
-# Check if pages is still empty
-if not pages:
-    st.error("No text extracted from the PDF. Please check the file path.")
-    st.stop()
-
-# Debugging (optional)
-st.write("Pages extracted:", pages)
-
+# Debugging
+st.write("✅ PDF loaded successfully. Extracted pages:", len(pages))
 
 # -------------------------------
 # Step 2. Initialize Groq API Client
