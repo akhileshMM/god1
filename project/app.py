@@ -11,8 +11,7 @@ from PyPDF2 import PdfReader
 # Step 1. PDF Processing Functions
 # -------------------------------
 
-pdf_path = "Bhagavad-GitaAsItis.pdf"
-
+pdf_path = "https://drive.google.com/file/d/1ezrjWqiOq9tFQrDycU7QfZcpDLO9kBz4/view?usp=sharing"
 # Check if file exists before proceeding
 if not os.path.exists(pdf_path):
     st.error(f"PDF file not found: {pdf_path}")
