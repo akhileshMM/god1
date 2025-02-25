@@ -43,7 +43,25 @@ client = Groq(api_key=api_key)
 
 st.sidebar.markdown("[Give Feedback Here!](https://forms.gle/your-google-form-link)")
 pdf_url = "project/Bhagavad-GitaAsItis.pdf"
-response = requests.get(pdf_url)
+pdf_path = "project/Bhagavad-GitaAsItis.pdf"
+
+# Check if file exists before reading
+if not os.path.exists(pdf_path):
+    st.error(f"PDF file not found: {pdf_path}")
+    st.stop()
+
+# Read PDF using PyPDF2
+try:
+    reader = PdfReader(pdf_path)
+    pages = [page.extract_text() for page in reader.pages if page.extract_text()]
+
+    if not pages:
+        st.error("No text extracted from the PDF. It might be an image-based PDF.")
+        st.stop()
+except Exception as e:
+    st.error(f"Error reading PDF: {e}")
+    st.stop()
+
 with open("Bhagavad-GitaAsItis", "wb") as f:
     f.write(response.content)
 
