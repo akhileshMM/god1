@@ -11,7 +11,13 @@ from PyPDF2 import PdfReader
 # Step 1. PDF Processing Functions
 # -------------------------------
 
-pages = []
+pages = []  # Initialize pages before using it
+if not os.path.exists("Bhagavad-GitaAsItis.pdf"):
+    st.error("PDF file not found. Please check the path.")
+    st.stop()
+
+pages = [page.extract_text() for page in reader.pages if page.extract_text()]
+
 
 try:
     reader = PdfReader("Bhagavad-GitaAsItis.pdf")  # Ensure this file exists
