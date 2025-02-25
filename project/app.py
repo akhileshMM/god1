@@ -54,7 +54,7 @@ client = Groq(api_key=api_key)
 # -------------------------------
 
 st.sidebar.markdown("[Give Feedback Here!](https://forms.gle/your-google-form-link)")
-pdf_url = "https://drive.google.com/file/d/1ezrjWqiOq9tFQrDycU7QfZcpDLO9kBz4/view?usp=sharing"
+pdf_url = "project/Bhagavad-GitaAsItis.pdf"
 response = requests.get(pdf_url)
 with open("Bhagavad-GitaAsItis", "wb") as f:
     f.write(response.content)
