@@ -10,32 +10,19 @@ import requests
 # Step 1. PDF Processing Functions
 # -------------------------------
 
-@st.cache_data(show_spinner=False)
-def load_pdf(pdf_path):
-    pdf_pages = []
-    try:
-        with open(pdf_path, "rb") as f:
-            reader = PyPDF2.PdfReader(f)
-            for page in reader.pages:
-                text = page.extract_text()
-                if text:
-                    pdf_pages.append(text)
-    except Exception as e:
-        st.error(f"Error reading PDF: {e}")
-    return pdf_pages
+from PyPDF2 import PdfReader
 
-@st.cache_resource(show_spinner=False)
-def create_vectorizer(pages):
-    vectorizer = TfidfVectorizer().fit(pages)
-    page_vectors = vectorizer.transform(pages)
-    return vectorizer, page_vectors
+try:
+    reader = PdfReader("Bhagavad-GitaAsItis.pdf")
+    pages = [page.extract_text() for page in reader.pages if page.extract_text()]
+except Exception as e:
+    st.error(f"Error reading PDF: {e}")
+    st.stop()
 
-def retrieve_context(query, vectorizer, page_vectors, pages, top_n=3):
-    query_vec = vectorizer.transform([query])
-    sims = cosine_similarity(query_vec, page_vectors).flatten()
-    top_indices = sims.argsort()[-top_n:][::-1]
-    context = "\n\n-----\n\n".join([pages[i] for i in top_indices])
-    return context
+if not pages:
+    st.error("No text extracted from the PDF. Please check the file path.")
+    st.stop()
+
 
 # -------------------------------
 # Step 2. Initialize Groq API Client
