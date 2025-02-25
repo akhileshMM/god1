@@ -40,8 +40,8 @@ def retrieve_context(query, vectorizer, page_vectors, pages, top_n=3):
 # -------------------------------
 # Step 2. Initialize Groq API Client
 # -------------------------------
-
-client = Groq(api_key="")
+api_key = st.secrets["groq"]["api_key"]
+client = Groq(api_key=api_key)
 
 # -------------------------------
 # Step 3. Streamlit Interface
